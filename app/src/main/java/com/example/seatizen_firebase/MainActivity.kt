@@ -31,13 +31,13 @@ class MainActivity : AppCompatActivity() {
                 val value_id = snapshot.child("Device").getValue<Long>()
                 val value_count = snapshot.child("capacity").getValue<Long>()
                 if (value_id != null) {
-                    Bus_ID.clear()
+                    //Bus_ID.clear()
                     Bus_ID.add(value_id.toString())
                     Log.i("TAG", "onChildAdded: $Bus_ID")
 
                 }
                 if (value_count != null) {
-                    Bus_count.clear()
+                   // Bus_count.clear()
                     Bus_count.add(value_count.toString())
                     Log.i("TAG", "onChildAdded now: $Bus_count")
 
@@ -49,16 +49,20 @@ class MainActivity : AppCompatActivity() {
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                 val value_id = snapshot.child("Device").getValue<Long>()
                 val value_count = snapshot.child("capacity").getValue<Long>()
-                if (value_id != null) {
-                    Bus_ID.clear()
-                    Bus_ID.add(value_id.toString())
+                /*if (value_id != null) {
+                    //Bus_ID[value_id.toInt()]= value_id.toString()
+                    //Bus_ID.removeAt(value_id.toInt())
+                   // Bus_ID.add(value_id.toString())
                     Log.i("TAG", "onChildAdded: $Bus_ID")
 
-                }
+                }*/
                 if (value_count != null) {
-                    Bus_count.clear()
-                    Bus_count.add(value_count.toString())
-                    Log.i("TAG", "onChildAdded now: $Bus_count")
+                    if (value_id != null) {
+                        Bus_count[(value_id.toInt()) -1]= value_count.toString()
+                    }
+                    //value_id?.toInt()?.let { Bus_count.removeAt(it) }
+                    //Bus_count.add(value_count.toString())
+                    Log.i("TAG", "onChildchanaged: $Bus_count")
 
                 }
 
@@ -71,15 +75,15 @@ class MainActivity : AppCompatActivity() {
                 val value_id = snapshot.child("Device").getValue<Long>()
                 val value_count = snapshot.child("capacity").getValue<Long>()
                 if (value_id != null) {
-                    Bus_ID.clear()
-                    Bus_ID.add(value_id.toString())
-                    Log.i("TAG", "onChildAdded: $Bus_ID")
+                    //Bus_ID.clear()
+
+                    Log.i("TAG", "onChildremoved: $Bus_ID")
 
                 }
                 if (value_count != null) {
-                    Bus_count.clear()
-                    Bus_count.add(value_count.toString())
-                    Log.i("TAG", "onChildAdded now: $Bus_count")
+                    //Bus_count.clear()
+                   // Bus_count.add(value_count.toString())
+                    Log.i("TAG", "onChildreomved: $Bus_count")
 
                 }
                 rv_recycler.layoutManager = LinearLayoutManager(this@MainActivity)
