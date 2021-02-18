@@ -24,12 +24,17 @@ class MainActivity : AppCompatActivity() {
     private fun LoadData(){
         val Bus_count = ArrayList<String>()
         val Bus_ID = ArrayList<String>()
+        val Bus_uniqueKey = ArrayList<String>()
         //Bus_count.add("12")
         val ref = FirebaseDatabase.getInstance().getReference("/prototype-pcs-default-rtdb/BusDemo")
         ref.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                val value_unique = snapshot.key
                 val value_id = snapshot.child("Device").getValue<Long>()
                 val value_count = snapshot.child("capacity").getValue<Long>()
+                if (value_unique != null) {
+                    Bus_uniqueKey.add(value_unique)
+                }
                 if (value_id != null) {
                     //Bus_ID.clear()
                     Bus_ID.add(value_id.toString())
@@ -47,6 +52,12 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                var changedItemNum =0
+                for( i in 0 until Bus_uniqueKey.size){
+                    if(snapshot.key == Bus_uniqueKey[i]){
+                        changedItemNum = i
+                    }
+                }
                 val value_id = snapshot.child("Device").getValue<Long>()
                 val value_count = snapshot.child("capacity").getValue<Long>()
                 /*if (value_id != null) {
@@ -56,9 +67,11 @@ class MainActivity : AppCompatActivity() {
                     Log.i("TAG", "onChildAdded: $Bus_ID")
 
                 }*/
+
                 if (value_count != null) {
                     if (value_id != null) {
-                        Bus_count[(value_id.toInt()) -1]= value_count.toString()
+                        Bus_ID[changedItemNum] = value_id.toString()
+                        Bus_count[changedItemNum]= value_count.toString()
                     }
                     //value_id?.toInt()?.let { Bus_count.removeAt(it) }
                     //Bus_count.add(value_count.toString())
