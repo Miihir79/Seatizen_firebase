@@ -1,57 +1,34 @@
 package com.example.seatizen_firebase
 
-import android.content.Intent
+import android.app.StatusBarManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.FirebaseApp
-import com.google.firebase.database.*
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.getValue
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.view.*
 
-class MainActivity : AppCompatActivity() {
+class AdminView : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        supportActionBar?.hide()
+        setContentView(R.layout.activity_admin_view)
         window.statusBarColor = ContextCompat.getColor(this,R.color.statusbar)
-        LoadData()
-        FirebaseApp.initializeApp(this)
-        btn_admin.setOnClickListener{
-            Pass_admin.visibility = View.VISIBLE
-            btn_admin2.visibility = View.VISIBLE
-            rv_recycler.visibility = View.INVISIBLE
-            btn_admin2.setOnClickListener{
-                if (Pass_admin.text.toString() == "1234")
-                {
-                    Pass_admin.text = null
-                    Pass_admin.visibility = View.INVISIBLE
-                    btn_admin2.visibility = View.INVISIBLE
-                    rv_recycler.visibility = View.VISIBLE
-                    val intent = Intent(this,AdminView::class.java)
-                    startActivity(intent)
-                }
-                else{
-                    Toast.makeText(applicationContext,"Wrong Password",Toast.LENGTH_LONG).show()
-                    Pass_admin.visibility = View.INVISIBLE
-                    btn_admin2.visibility = View.INVISIBLE
-                    rv_recycler.visibility = View.VISIBLE
-                }
-            }
-
-        }
+        supportActionBar?.hide()
+        loadDataAdmin()
     }
-    private fun LoadData(){
+    private fun loadDataAdmin(){
         val Bus_count = ArrayList<String>()
         val Bus_ID = ArrayList<String>()
+        val Bus_up = ArrayList<String>()
+        val Bus_down = ArrayList<String>()
         val Bus_uniqueKey = ArrayList<String>()
         //Bus_count.add("12")
         val ref = FirebaseDatabase.getInstance().getReference("/prototype-pcs-default-rtdb/BusDemo")
@@ -60,6 +37,8 @@ class MainActivity : AppCompatActivity() {
                 val value_unique = snapshot.key
                 val value_id = snapshot.child("Device").getValue<Long>()
                 val value_count = snapshot.child("capacity").getValue<Long>()
+                val value_up = snapshot.child("count_up").getValue<Long>()
+                val value_down = snapshot.child("count_down").getValue<Long>()
                 if (value_unique != null) {
                     Bus_uniqueKey.add(value_unique)
                 }
@@ -70,15 +49,23 @@ class MainActivity : AppCompatActivity() {
 
                 }
                 if (value_count != null) {
-                   // Bus_count.clear()
+                    // Bus_count.clear()
                     Bus_count.add(value_count.toString())
                     Log.i("TAG", "onChildAdded now: $Bus_count")
 
                 }
-                shimmer.stopShimmer()
-                shimmer.visibility = View.GONE
-                rv_recycler.layoutManager = LinearLayoutManager(this@MainActivity)
-                rv_recycler.adapter = RecyclerAdaptor(Bus_ID,Bus_count)
+                if (value_up != null) {
+                    Bus_up.add(value_up.toString())
+                    Log.i("TAG", "onChildAdded now: $Bus_up")
+
+                }
+                if (value_up != null) {
+                    Bus_down.add(value_down.toString())
+                    Log.i("TAG", "onChildAdded now: $Bus_down")
+
+                }
+                rv_recycler.layoutManager = LinearLayoutManager(this@AdminView)
+                rv_recycler.adapter = RecyclerAdaptor_admin(Bus_count,Bus_ID, Bus_up, Bus_down)
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
@@ -90,47 +77,40 @@ class MainActivity : AppCompatActivity() {
                 }
                 val value_id = snapshot.child("Device").getValue<Long>()
                 val value_count = snapshot.child("capacity").getValue<Long>()
-                /*if (value_id != null) {
-                    //Bus_ID[value_id.toInt()]= value_id.toString()
-                    //Bus_ID.removeAt(value_id.toInt())
-                   // Bus_ID.add(value_id.toString())
-                    Log.i("TAG", "onChildAdded: $Bus_ID")
-
-                }*/
-
+                val value_up = snapshot.child("count_up").getValue<Long>()
+                val value_down = snapshot.child("count_down").getValue<Long>()
                 if (value_count != null) {
                     if (value_id != null) {
                         Bus_ID[changedItemNum] = value_id.toString()
                         Bus_count[changedItemNum]= value_count.toString()
+                        Bus_up[changedItemNum]= value_up.toString()
+                        Bus_down[changedItemNum]= value_down.toString()
                     }
-                    //value_id?.toInt()?.let { Bus_count.removeAt(it) }
-                    //Bus_count.add(value_count.toString())
                     Log.i("TAG", "onChildchanaged: $Bus_count")
 
                 }
 
-                rv_recycler.layoutManager = LinearLayoutManager(this@MainActivity)
-                rv_recycler.adapter = RecyclerAdaptor(Bus_ID,Bus_count)
+                rv_recycler.layoutManager = LinearLayoutManager(this@AdminView)
+                rv_recycler.adapter = RecyclerAdaptor_admin(Bus_count,Bus_ID, Bus_up, Bus_down)
 
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
                 val value_id = snapshot.child("Device").getValue<Long>()
                 val value_count = snapshot.child("capacity").getValue<Long>()
+                val value_up = snapshot.child("count_up").getValue<Long>()
+                val value_down = snapshot.child("count_down").getValue<Long>()
                 if (value_id != null) {
-                    //Bus_ID.clear()
 
                     Log.i("TAG", "onChildremoved: $Bus_ID")
 
                 }
                 if (value_count != null) {
-                    //Bus_count.clear()
-                   // Bus_count.add(value_count.toString())
                     Log.i("TAG", "onChildreomved: $Bus_count")
 
                 }
-                rv_recycler.layoutManager = LinearLayoutManager(this@MainActivity)
-                rv_recycler.adapter = RecyclerAdaptor(Bus_ID,Bus_count)
+                rv_recycler.layoutManager = LinearLayoutManager(this@AdminView)
+                rv_recycler.adapter = RecyclerAdaptor_admin(Bus_count,Bus_ID, Bus_up, Bus_down)
             }
 
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
@@ -145,4 +125,3 @@ class MainActivity : AppCompatActivity() {
 
     }
 }
-
