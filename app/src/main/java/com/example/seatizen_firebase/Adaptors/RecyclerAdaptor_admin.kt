@@ -1,10 +1,11 @@
-package com.example.seatizen_firebase
+package com.example.seatizen_firebase.Adaptors
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.seatizen_firebase.R
 import kotlinx.android.synthetic.main.row_pattern.view.Bus_id
 import kotlinx.android.synthetic.main.row_pattern.view.Bus_count
 import kotlinx.android.synthetic.main.row_pattern_admin.view.*

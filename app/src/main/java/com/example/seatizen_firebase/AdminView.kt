@@ -1,19 +1,23 @@
 package com.example.seatizen_firebase
 
-import android.app.StatusBarManager
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.seatizen_firebase.Adaptors.RecyclerAdaptor_admin
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.getValue
+import kotlinx.android.synthetic.main.activity_admin_view.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.rv_recycler
 
 class AdminView : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -23,33 +27,39 @@ class AdminView : AppCompatActivity() {
         window.statusBarColor = ContextCompat.getColor(this,R.color.statusbar)
         supportActionBar?.hide()
         loadDataAdmin()
+
+        btn_report.setOnClickListener {
+            val intent = Intent(this,Report::class.java)
+            startActivity(intent)
+        }
     }
     private fun loadDataAdmin(){
+
         val Bus_count = ArrayList<String>()
         val Bus_ID = ArrayList<String>()
         val Bus_up = ArrayList<String>()
         val Bus_down = ArrayList<String>()
         val Bus_uniqueKey = ArrayList<String>()
-        //Bus_count.add("12")
+
         val ref = FirebaseDatabase.getInstance().getReference("/prototype-pcs-default-rtdb/BusDemo")
         ref.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+
                 val value_unique = snapshot.key
                 val value_id = snapshot.child("Device").getValue<Long>()
                 val value_count = snapshot.child("capacity").getValue<Long>()
                 val value_up = snapshot.child("count_up").getValue<Long>()
                 val value_down = snapshot.child("count_down").getValue<Long>()
+
                 if (value_unique != null) {
                     Bus_uniqueKey.add(value_unique)
                 }
                 if (value_id != null) {
-                    //Bus_ID.clear()
                     Bus_ID.add(value_id.toString())
                     Log.i("TAG", "onChildAdded: $Bus_ID")
 
                 }
                 if (value_count != null) {
-                    // Bus_count.clear()
                     Bus_count.add(value_count.toString())
                     Log.i("TAG", "onChildAdded now: $Bus_count")
 
@@ -64,6 +74,9 @@ class AdminView : AppCompatActivity() {
                     Log.i("TAG", "onChildAdded now: $Bus_down")
 
                 }
+                shimmer_admin.visibility = View.GONE
+                shimmer_admin.stopShimmer()
+
                 rv_recycler.layoutManager = LinearLayoutManager(this@AdminView)
                 rv_recycler.adapter = RecyclerAdaptor_admin(Bus_count,Bus_ID, Bus_up, Bus_down)
             }
@@ -75,10 +88,12 @@ class AdminView : AppCompatActivity() {
                         changedItemNum = i
                     }
                 }
+
                 val value_id = snapshot.child("Device").getValue<Long>()
                 val value_count = snapshot.child("capacity").getValue<Long>()
                 val value_up = snapshot.child("count_up").getValue<Long>()
                 val value_down = snapshot.child("count_down").getValue<Long>()
+
                 if (value_count != null) {
                     if (value_id != null) {
                         Bus_ID[changedItemNum] = value_id.toString()
@@ -89,10 +104,8 @@ class AdminView : AppCompatActivity() {
                     Log.i("TAG", "onChildchanaged: $Bus_count")
 
                 }
-
                 rv_recycler.layoutManager = LinearLayoutManager(this@AdminView)
                 rv_recycler.adapter = RecyclerAdaptor_admin(Bus_count,Bus_ID, Bus_up, Bus_down)
-
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
@@ -100,15 +113,18 @@ class AdminView : AppCompatActivity() {
                 val value_count = snapshot.child("capacity").getValue<Long>()
                 val value_up = snapshot.child("count_up").getValue<Long>()
                 val value_down = snapshot.child("count_down").getValue<Long>()
+
                 if (value_id != null) {
 
                     Log.i("TAG", "onChildremoved: $Bus_ID")
 
                 }
+
                 if (value_count != null) {
                     Log.i("TAG", "onChildreomved: $Bus_count")
 
                 }
+
                 rv_recycler.layoutManager = LinearLayoutManager(this@AdminView)
                 rv_recycler.adapter = RecyclerAdaptor_admin(Bus_count,Bus_ID, Bus_up, Bus_down)
             }
