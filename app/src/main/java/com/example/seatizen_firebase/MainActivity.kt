@@ -36,51 +36,6 @@ class MainActivity : AppCompatActivity() {
 
         FirebaseApp.initializeApp(this)
 
-        //to ask for permission
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ), 1
-        )
-
-        val filename = "seatizen.csv"
-        // create a File object for the parent directory
-        val wallpaperDirectory = File("/sdcard/Seatizen/")
-        // have the object build the directory structure, if needed.
-        wallpaperDirectory.mkdirs()
-        // create a File object for the output file
-        val outputFile = File(wallpaperDirectory, filename)
-        // now attach the OutputStream to the file object, instead of a String representation
-        try {
-            val fos = FileOutputStream(outputFile)
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        }
-
-       // val root: File = Environment.getExternalStorageDirectory()
-        val gpxfile = File(wallpaperDirectory, "seatizen.csv") //takes path and filename of new file
-        val writer =FileWriter(gpxfile)
-        writer.append("Emp_Name")
-        writer.append(',')
-        writer.append("Adress");
-        writer.append('\n')
-        writer.append("1Emp_Name")
-        writer.append(',')
-        writer.append("1Adress");
-        writer.append('\n')
-        writer.flush()
-        writer.close()
-
-        /*val folder = filesDir
-        val f = File(folder, "folder_name")
-        f.mkdir()*/
-        /*val file = File(Environment.DIRECTORY_DOWNLOADS, "Seatizen_report")
-        if(!file.exists()){
-            file.mkdir()
-        }*/
-
         btn_admin.setOnClickListener{
             //set visibility to make UI cleaner
             Pass_admin.visibility = View.VISIBLE
@@ -117,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         val Bus_uniqueKey = ArrayList<String>()
 
         // A reference to the firebase realtime database to access its nodes
-        val ref = FirebaseDatabase.getInstance().getReference("/prototype-pcs-default-rtdb/BusDemo")
+        val ref = FirebaseDatabase.getInstance().getReference("/BusDemo")
         ref.addChildEventListener(object : ChildEventListener {
             //When the app starts the children will be 'Added' to the database
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
@@ -182,7 +137,7 @@ class MainActivity : AppCompatActivity() {
 
             }
 
-            override fun onChildRemoved(snapshot: DataSnapshot) { // rare case when this happens the application will blink 
+            override fun onChildRemoved(snapshot: DataSnapshot) { // rare case when this happens the application will blink
                 val value_id = snapshot.child("Device").getValue<Long>()
                 val value_count = snapshot.child("capacity").getValue<Long>()
                 if (value_id != null) {

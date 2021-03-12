@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.seatizen_firebase.Adaptors.RecyclerAdaptor_admin
+import com.github.mikephil.charting.data.BarEntry
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -41,7 +42,7 @@ class AdminView : AppCompatActivity() {
         val Bus_down = ArrayList<String>()
         val Bus_uniqueKey = ArrayList<String>()
 
-        val ref = FirebaseDatabase.getInstance().getReference("/prototype-pcs-default-rtdb/BusDemo")
+        val ref = FirebaseDatabase.getInstance().getReference("/BusDemo")
         ref.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
 
@@ -74,6 +75,7 @@ class AdminView : AppCompatActivity() {
                     Log.i("TAG", "onChildAdded now: $Bus_down")
 
                 }
+
                 shimmer_admin.visibility = View.GONE
                 shimmer_admin.stopShimmer()
 
