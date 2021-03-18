@@ -6,14 +6,30 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     tools:context=".Report">
+    <TextView
+        android:id="@+id/heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-smallcaps"
+        android:padding="5dp"
+        android:shadowColor="#616060"
+        android:shadowRadius="8"
+        android:text="Report"
+        android:textColor="@color/black"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         android:background="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/heading">
+        app:layout_constraintTop_toBottomOf="@+id/spinner">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,12 +47,12 @@
                 android:id="@+id/cardView3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:background="@drawable/card_view"
                 app:cardBackgroundColor="@color/design_default_color_surface"
                 app:cardCornerRadius="10dp"
-                app:cardElevation="10dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp">
+                app:cardElevation="10dp">
 
                 <TableRow
                     android:layout_width="match_parent"
@@ -98,24 +114,41 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_recycler_report"
                 android:layout_width="match_parent"
-                android:layout_height="372dp" />
+                android:layout_height="match_parent"
+                tools:listitem="@layout/recycler_view_item_1" />
 
         </LinearLayout>
     </ScrollView>
 
-    <TextView
-        android:id="@+id/heading"
-        android:layout_width="wrap_content"
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-smallcaps"
-        android:padding="5dp"
-        android:shadowColor="#616060"
-        android:shadowRadius="8"
-        android:text="Report"
-        android:textColor="@color/black"
-        android:textSize="36sp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/spinner_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/heading" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/custom_btn"
+        android:text="Generate"
+        android:textAlignment="viewStart"
+        android:textColor="#ffff"
+        app:backgroundTint="#FF0099CC"
+        app:layout_constraintBottom_toBottomOf="@+id/heading"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/heading"
         app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
